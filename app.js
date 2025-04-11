@@ -418,3 +418,78 @@ const FoodLotteryApp = () => {
       </div>
     );
   }
+// History view
+  if (view === 'history') {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: colors.pink }}>
+        <div 
+          className="p-4 flex items-center justify-between"
+          style={{ borderBottom: `1px solid ${colors.lavender}` }}
+        >
+          <button 
+            onClick={() => setView('home')}
+            className="flex items-center"
+          >
+            {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+            <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
+          </button>
+          <h2 className="text-xl font-bold" style={{ color: colors.purple }}>{uiText[language].history}</h2>
+          <div className="w-10"></div>
+        </div>
+        
+        <div className="p-4">
+          {history.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              {React.createElement(Clock, { size: 48, color: colors.purple, opacity: 0.7 })}
+              <p className="mt-4 text-center font-bold" style={{ color: colors.purple }}>
+                {uiText[language].noHistory}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {history.map(item => (
+                <div 
+                  key={item.id} 
+                  className="bg-white rounded-2xl p-4"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <div 
+                        className="w-12 h-12 rounded-full mr-3 flex items-center justify-center"
+                        style={{ backgroundColor: item.food.color }}
+                      >
+                        {getIconComponent(item.food.icon, 20)}
+                      </div>
+                      <div>
+                        <h3 className="font-bold" style={{ color: colors.purple }}>
+                          {item.food.name[language]}
+                        </h3>
+                        <p className="text-xs" style={{ color: colors.purple }}>
+                          {item.date}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="text-sm font-bold px-3 py-1 rounded-full mr-2" 
+                        style={{ backgroundColor: item.food.color, color: colors.purple }}>
+                        {item.food.calories} {uiText[language].kcal}
+                      </div>
+                      <button 
+                        onClick={() => deleteHistoryItem(item.id)}
+                        className="p-2 rounded-full bg-pink-50"
+                      >
+                        {React.createElement(Trash2, { size: 16, color: colors.purple })}
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-sm mt-2" style={{ color: colors.purple }}>
+                    {item.message}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
