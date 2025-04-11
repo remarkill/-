@@ -64,4 +64,67 @@ const FoodLotteryApp = () => {
     }
   ]);
   
-  // 其余代码将在下一步添加...
+ const [selectedFood, setSelectedFood] = useState(null);
+  const [spinning, setSpinning] = useState(false);
+  const [view, setView] = useState('home');
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({ name: '', desc: '', calories: '', icon: 'cake' });
+  const [history, setHistory] = useState([]);
+  const [showIconDropdown, setShowIconDropdown] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+
+  // 从本地存储加载数据
+  useEffect(() => {
+    const savedFoods = localStorage.getItem('foods');
+    if (savedFoods) {
+      setFoods(JSON.parse(savedFoods));
+    }
+    
+    const savedHistory = localStorage.getItem('history');
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory));
+    }
+    
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
+  
+  // 保存数据到本地存储
+  useEffect(() => {
+    localStorage.setItem('foods', JSON.stringify(foods));
+  }, [foods]);
+  
+  useEffect(() => {
+    localStorage.setItem('history', JSON.stringify(history));
+  }, [history]);
+  
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  // Sweet messages with translations
+  const messages = {
+    cn: [
+      "乐公主，希望这顿美食能让你的一天更加美好 ♡",
+      "乐公主，今天和你一起吃这个，感觉世界都变得更美好了",
+      "和我的乐公主分享美食的每一刻都是我的幸福时光",
+      "为我最爱的乐公主准备的美食选择，希望你喜欢",
+      "美食虽好，但都比不上乐公主的笑容甜美"
+    ],
+    en: [
+      "Princess Le, I hope this meal makes your day more wonderful ♡",
+      "Princess Le, eating this with you today makes the world more beautiful",
+      "Every moment sharing food with my Princess Le is my happiness",
+      "A food choice prepared for my beloved Princess Le, hope you like it",
+      "Food is good, but nothing compares to Princess Le's sweet smile"
+    ],
+    jp: [
+      "楽プリンセス、この食事があなたの一日をより素晴らしいものにしますように ♡",
+      "楽プリンセス、今日あなたとこれを食べると、世界がより美しくなります",
+      "私の楽プリンセスと食事を共有する一瞬一瞬が私の幸せな時間です",
+      "最愛の楽プリンセスのために用意した食事の選択、気に入ってくれると嬉しいです",
+      "食事は素晴らしいですが、楽プリンセスの甘い笑顔には及びません"
+    ]
+  };
