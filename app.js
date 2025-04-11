@@ -688,3 +688,275 @@ const FoodLotteryApp = () => {
       </div>
     );
   }
+// Edit view
+  if (view === 'edit') {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: colors.pink }}>
+        <div 
+          className="p-4 flex items-center justify-between"
+          style={{ borderBottom: `1px solid ${colors.lavender}` }}
+        >
+          <button 
+            onClick={() => setView('settings')}
+            className="flex items-center"
+          >
+            {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+            <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
+          </button>
+          <h2 className="text-xl font-bold" style={{ color: colors.purple }}>
+            {editing && editing.id ? uiText[language].editFood : uiText[language].addFood}
+          </h2>
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center justify-center bg-white rounded-full shadow-sm"
+            style={{ width: '32px', height: '32px', position: 'relative' }}
+          >
+            {React.createElement(Globe, { size: 16, color: colors.purple })}
+            <span className="text-xs font-bold absolute" style={{ color: colors.purple, marginTop: '14px' }}>
+              {getLanguageDisplay()}
+            </span>
+          </button>
+        </div>
+        
+        <div className="p-6">
+          <div className="flex justify-center mb-6">
+            <div 
+              className="w-20 h-20 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: editing ? editing.color : colors.lavender }}
+            >
+              {(() => {
+                switch(form.icon) {
+                  case 'soup': return React.createElement(Soup, { size: 32, color: colors.purple });
+                  case 'drumstick': return React.createElement(Drumstick, { size: 32, color: colors.purple });
+                  case 'fish': return React.createElement(Fish, { size: 32, color: colors.purple });
+                  case 'cake': default: return React.createElement(Cake, { size: 32, color: colors.purple });
+                }
+              })()}
+            </div>
+          </div>
+          
+          <div className="mb-6 relative">
+            <label className="block text-sm font-medium mb-2" style={{ color: colors.purple }}>
+              {uiText[language].selectIcon}
+            </label>
+            <button
+              onClick={() => setShowIconDropdown(!showIconDropdown)}
+              className="w-full p-3 bg-white rounded-lg border flex items-center justify-between"
+              style={{ borderColor: colors.lavender }}
+            >
+              <div className="flex items-center">
+                {form.icon === 'soup' && React.createElement(Soup, { size: 20, color: colors.purple })}
+                {form.icon === 'drumstick' && React.createElement(Drumstick, { size: 20, color: colors.purple })}
+                {form.icon === 'fish' && React.createElement(Fish, { size: 20, color: colors.purple })}
+                {form.icon === 'cake' && React.createElement(Cake, { size: 20, color: colors.purple })}
+                <span className="ml-2 text-sm" style={{ color: colors.purple }}>
+                  {form.icon === 'soup' && uiText[language].soup}
+                  {form.icon === 'drumstick' && uiText[language].meat}
+                  {form.icon === 'fish' && uiText[language].fish}
+                  {form.icon === 'cake' && uiText[language].dessert}
+                </span>
+              </div>
+              {React.createElement(ChevronLeft, { 
+                size: 16, 
+                color: colors.purple,
+                style: { 
+                  transform: showIconDropdown ? 'rotate(-90deg)' : 'rotate(90deg)',
+                  transition: 'transform 0.3s'
+                }
+              })}
+            </button>
+            
+            {showIconDropdown && (
+              <div className="absolute w-full mt-1 p-2 bg-white rounded-lg shadow-lg border z-10" style={{ borderColor: colors.lavender }}>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => {
+                      setForm({...form, icon: 'soup'});
+                      setShowIconDropdown(false);
+                    }}
+                    className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
+                  >
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.teal }}>
+                      {React.createElement(Soup, { size: 16, color: colors.purple })}
+                    </div>
+                    <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].soup}</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setForm({...form, icon: 'drumstick'});
+                      setShowIconDropdown(false);
+                    }}
+                    className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
+                  >
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.green }}>
+                      {React.createElement(Drumstick, { size: 16, color: colors.purple })}
+                    </div>
+                    <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].meat}</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setForm({...form, icon: 'fish'});
+                      setShowIconDropdown(false);
+                    }}
+                    className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
+                  >
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.teal }}>
+                      {React.createElement(Fish, { size: 16, color: colors.purple })}
+                    </div>
+                    <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].fish}</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setForm({...form, icon: 'cake'});
+                      setShowIconDropdown(false);
+                    }}
+                    className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
+                  >
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.lavender }}>
+                      {React.createElement(Cake, { size: 16, color: colors.purple })}
+                    </div>
+                    <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].dessert}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="space-y-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: colors.purple }}>
+                {uiText[language].foodName}
+              </label>
+              <input 
+                type="text"
+                value={form.name}
+                onChange={(e) => setForm({...form, name: e.target.value})}
+                className="w-full p-2 rounded-lg border"
+                placeholder="e.g., Hot Pot"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: colors.purple }}>
+                {uiText[language].description}
+              </label>
+              <input 
+                type="text"
+                value={form.desc}
+                onChange={(e) => setForm({...form, desc: e.target.value})}
+                className="w-full p-2 rounded-lg border"
+                placeholder="e.g., Warm hot pot, just like my feelings for you"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-1" style={{ color: colors.purple }}>
+                {uiText[language].calories}
+              </label>
+              <input 
+                type="number"
+                value={form.calories}
+                onChange={(e) => setForm({...form, calories: e.target.value})}
+                className="w-full p-2 rounded-lg border"
+                placeholder="e.g., 450"
+              />
+            </div>
+          </div>
+          
+          <div className="flex gap-3">
+            <button
+              onClick={() => setView('settings')}
+              className="flex-1 py-2 rounded-full font-bold"
+              style={{ backgroundColor: colors.pink, color: colors.purple }}
+            >
+              {uiText[language].cancel}
+            </button>
+            <button
+              onClick={() => {
+                // Save food
+                if (!form.name || !form.desc) {
+                  alert(uiText[language].alertFillNameDesc);
+                  return;
+                }
+                
+                if (!form.calories || isNaN(parseInt(form.calories))) {
+                  alert(uiText[language].alertValidCalories);
+                  return;
+                }
+                
+                const calories = parseInt(form.calories);
+                
+                // Get selected icon
+                let foodIcon;
+                switch(form.icon) {
+                  case 'soup': foodIcon = 'Soup'; break;
+                  case 'drumstick': foodIcon = 'Drumstick'; break;
+                  case 'fish': foodIcon = 'Fish'; break;
+                  case 'cake': default: foodIcon = 'Cake'; break;
+                }
+                
+                if (editing && editing.id) {
+                  // Update existing food - preserve other languages
+                  const updatedName = { ...editing.name };
+                  const updatedDesc = { ...editing.desc };
+                  
+                  // Only update the current language
+                  updatedName[language] = form.name;
+                  updatedDesc[language] = form.desc;
+                  
+                  setFoods(foods.map(f => 
+                    f.id === editing.id 
+                      ? { ...editing, name: updatedName, desc: updatedDesc, calories, icon: foodIcon }
+                      : f
+                  ));
+                } else {
+                  // Add new food - set all languages to the current input
+                  const nameObj = {
+                    cn: form.name,
+                    en: form.name,
+                    jp: form.name
+                  };
+                  
+                  const descObj = {
+                    cn: form.desc,
+                    en: form.desc,
+                    jp: form.desc
+                  };
+                  
+                  setFoods([...foods, {
+                    id: Date.now(),
+                    name: nameObj,
+                    desc: descObj,
+                    calories,
+                    color: colors.lavender,
+                    icon: foodIcon
+                  }]);
+                }
+                
+                setEditing(null);
+                setView('settings');
+              }}
+              className="flex-1 py-2 rounded-full font-bold"
+              style={{ backgroundColor: colors.green, color: colors.purple }}
+            >
+              {uiText[language].save}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
+  // Default fallback view
+  return (
+    <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: colors.pink }}>
+      <p style={{ color: colors.purple }}>Loading...</p>
+    </div>
+  );
+};
+
+// Render the app
+ReactDOM.render(<FoodLotteryApp />, document.getElementById('root'));
