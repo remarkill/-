@@ -1,5 +1,5 @@
-const { useState, useEffect } = React;
-const { 
+import { useState } from 'react';
+import { 
   ChevronLeft, 
   Share2, 
   Utensils, 
@@ -15,7 +15,7 @@ const {
   Clock,
   History,
   Globe
-} = lucide;
+} from 'lucide-react';
 
 const FoodLotteryApp = () => {
   // Colors
@@ -36,7 +36,7 @@ const FoodLotteryApp = () => {
       desc: { cn: '暖暖的火锅', en: 'Warm and comforting hot pot', jp: '温かい火鍋' }, 
       calories: 650, 
       color: colors.teal, 
-      icon: 'Soup' 
+      icon: <Soup /> 
     },
     { 
       id: 2, 
@@ -44,7 +44,7 @@ const FoodLotteryApp = () => {
       desc: { cn: '香甜软糯', en: 'Sweet and tender', jp: '甘くて柔らかい' }, 
       calories: 450, 
       color: colors.green, 
-      icon: 'Drumstick' 
+      icon: <Drumstick /> 
     },
     { 
       id: 3, 
@@ -52,7 +52,7 @@ const FoodLotteryApp = () => {
       desc: { cn: '每一个都充满爱意', en: 'Each one filled with love', jp: '愛情がこもった一つ一つ' }, 
       calories: 320, 
       color: colors.lavender, 
-      icon: 'Cake' 
+      icon: <Cake /> 
     },
     { 
       id: 4, 
@@ -60,11 +60,11 @@ const FoodLotteryApp = () => {
       desc: { cn: '酸辣爽口', en: 'Sour, spicy and refreshing', jp: '酸っぱくて辛くて爽やか' }, 
       calories: 380, 
       color: colors.teal, 
-      icon: 'Fish' 
+      icon: <Fish /> 
     }
   ]);
   
- const [selectedFood, setSelectedFood] = useState(null);
+  const [selectedFood, setSelectedFood] = useState(null);
   const [spinning, setSpinning] = useState(false);
   const [view, setView] = useState('home');
   const [editing, setEditing] = useState(null);
@@ -72,37 +72,6 @@ const FoodLotteryApp = () => {
   const [history, setHistory] = useState([]);
   const [showIconDropdown, setShowIconDropdown] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-
-  // 从本地存储加载数据
-  useEffect(() => {
-    const savedFoods = localStorage.getItem('foods');
-    if (savedFoods) {
-      setFoods(JSON.parse(savedFoods));
-    }
-    
-    const savedHistory = localStorage.getItem('history');
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory));
-    }
-    
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) {
-      setLanguage(savedLanguage);
-    }
-  }, []);
-  
-  // 保存数据到本地存储
-  useEffect(() => {
-    localStorage.setItem('foods', JSON.stringify(foods));
-  }, [foods]);
-  
-  useEffect(() => {
-    localStorage.setItem('history', JSON.stringify(history));
-  }, [history]);
-  
-  useEffect(() => {
-    localStorage.setItem('language', language);
-  }, [language]);
 
   // Sweet messages with translations
   const messages = {
@@ -128,7 +97,8 @@ const FoodLotteryApp = () => {
       "食事は素晴らしいですが、楽プリンセスの甘い笑顔には及びません"
     ]
   };
-// UI text translations
+  
+  // UI text translations
   const uiText = {
     cn: {
       history: "历史",
@@ -165,8 +135,7 @@ const FoodLotteryApp = () => {
       language: "语言",
       chinese: "中文",
       english: "英文",
-      japanese: "日文",
-      deleteHistory: "删除记录"
+      japanese: "日文"
     },
     en: {
       history: "History",
@@ -203,8 +172,7 @@ const FoodLotteryApp = () => {
       language: "Language",
       chinese: "Chinese",
       english: "English",
-      japanese: "Japanese",
-      deleteHistory: "Delete Record"
+      japanese: "Japanese"
     },
     jp: {
       history: "履歴",
@@ -241,11 +209,11 @@ const FoodLotteryApp = () => {
       language: "言語",
       chinese: "中国語",
       english: "英語",
-      japanese: "日本語",
-      deleteHistory: "記録を削除"
+      japanese: "日本語"
     }
   };
-// Toggle language
+
+  // Toggle language
   const toggleLanguage = () => {
     if (language === 'cn') {
       setLanguage('en');
@@ -259,24 +227,6 @@ const FoodLotteryApp = () => {
   // Language display
   const getLanguageDisplay = () => {
     return language === 'cn' ? '中' : language === 'en' ? 'EN' : '日';
-  };
-  
-  // Delete single history entry
-  const deleteHistoryItem = (id) => {
-    setHistory(history.filter(item => item.id !== id));
-  };
-  
-  // 获取图标组件
-  const getIconComponent = (iconName, size = 24) => {
-    const props = { size };
-    switch(iconName) {
-      case 'Soup': return React.createElement(Soup, props);
-      case 'Drumstick': return React.createElement(Drumstick, props);
-      case 'Fish': return React.createElement(Fish, props);
-      case 'Cake': return React.createElement(Cake, props);
-      case 'Utensils': return React.createElement(Utensils, props);
-      default: return React.createElement(Cake, props);
-    }
   };
 
   // Start lottery
@@ -315,8 +265,76 @@ const FoodLotteryApp = () => {
       }
     }, 150);
   };
+
+  // UI rendering based on current view
+  if (view === 'home') {
+    return (
+      <div className="min-h-screen p-6" style={{ backgroundColor: colors.pink }}>
+        <div className="flex justify-between mb-4">
+          <button
+            onClick={() => setView('history')}
+            className="p-2 rounded-full flex items-center"
+          >
+            <History size={20} style={{ color: history.length === 0 ? colors.purple : colors.purple }} />
+            <span className="ml-1 text-sm font-bold" style={{ color: colors.purple }}>
+              {uiText[language].history}
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setView('settings')}
+            className="p-2 rounded-full"
+          >
+            <Settings size={20} style={{ color: colors.purple }} />
+          </button>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <h1 className="text-4xl font-bold mb-10 text-center" style={{ color: colors.purple }}>
+            {uiText[language].whatToEat}
+          </h1>
+          
+          <div className="relative w-64 h-64 mb-10">
+            <div className="absolute w-56 h-56 rounded-full border-4 border-dashed" style={{ 
+              borderColor: colors.lavender,
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)'
+            }}></div>
+            
+            <div className="absolute w-48 h-48 rounded-full" style={{ 
+              background: `linear-gradient(45deg, ${colors.lavender}, ${colors.teal})`,
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div className="w-40 h-40 rounded-full bg-white flex items-center justify-center">
+                <div className="flex flex-col items-center">
+                  <Utensils size={40} style={{ color: colors.purple }} />
+                  <Heart size={20} style={{ color: colors.lavender, marginTop: 8 }} />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button
+            onClick={startLottery}
+            className="py-3 px-10 rounded-full text-lg font-bold text-white mb-6"
+            style={{ backgroundColor: colors.purple }}
+            disabled={foods.length === 0}
+          >
+            {uiText[language].startLottery}
+          </button>
+          
+          <p style={{ color: colors.purple }}>{uiText[language].pickFood}</p>
+        </div>
+      </div>
+    );
+  }
   
-// Spinning view
   if (view === 'spinning') {
     return (
       <div className="min-h-screen p-6 flex flex-col items-center justify-center" style={{ backgroundColor: colors.pink }}>
@@ -331,7 +349,7 @@ const FoodLotteryApp = () => {
               style={{ backgroundColor: selectedFood.color }}
             >
               <div className="mb-4 p-4 bg-white rounded-full">
-                {getIconComponent(selectedFood.icon)}
+                {selectedFood.icon}
               </div>
               <span className="text-2xl font-bold text-center" style={{ color: colors.purple }}>
                 {selectedFood.name[language]}
@@ -347,7 +365,6 @@ const FoodLotteryApp = () => {
     );
   }
   
-  // Result view
   if (view === 'result' && selectedFood) {
     return (
       <div className="min-h-screen p-6 flex flex-col items-center justify-center" style={{ backgroundColor: colors.pink }}>
@@ -360,7 +377,7 @@ const FoodLotteryApp = () => {
               onClick={() => setView('home')}
               className="flex items-center"
             >
-              {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+              <ChevronLeft size={20} style={{ color: colors.purple }} />
               <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
             </button>
             <h2 className="text-xl font-bold" style={{ color: colors.purple }}>{uiText[language].todayFood}</h2>
@@ -373,7 +390,7 @@ const FoodLotteryApp = () => {
                 className="w-28 h-28 rounded-full mb-4 flex items-center justify-center"
                 style={{ backgroundColor: selectedFood.color }}
               >
-                {getIconComponent(selectedFood.icon, 48)}
+                {React.cloneElement(selectedFood.icon, { size: 48 })}
               </div>
               
               <div className="px-4 py-1 rounded-full text-sm font-bold mb-4" style={{ 
@@ -409,8 +426,8 @@ const FoodLotteryApp = () => {
                 className="flex-1 py-3 rounded-full font-bold flex items-center justify-center"
                 style={{ backgroundColor: selectedFood.color, color: colors.purple }}
               >
-                {React.createElement(Share2, { size: 18 })}
-                <span className="ml-2">{uiText[language].shareResult}</span>
+                <Share2 size={18} className="mr-2" />
+                {uiText[language].shareResult}
               </button>
             </div>
           </div>
@@ -418,7 +435,8 @@ const FoodLotteryApp = () => {
       </div>
     );
   }
-// History view
+  
+  // History view
   if (view === 'history') {
     return (
       <div className="min-h-screen" style={{ backgroundColor: colors.pink }}>
@@ -430,7 +448,7 @@ const FoodLotteryApp = () => {
             onClick={() => setView('home')}
             className="flex items-center"
           >
-            {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+            <ChevronLeft size={20} style={{ color: colors.purple }} />
             <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
           </button>
           <h2 className="text-xl font-bold" style={{ color: colors.purple }}>{uiText[language].history}</h2>
@@ -440,7 +458,7 @@ const FoodLotteryApp = () => {
         <div className="p-4">
           {history.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64">
-              {React.createElement(Clock, { size: 48, color: colors.purple, opacity: 0.7 })}
+              <Clock size={48} style={{ color: colors.purple, opacity: 0.7 }} />
               <p className="mt-4 text-center font-bold" style={{ color: colors.purple }}>
                 {uiText[language].noHistory}
               </p>
@@ -458,7 +476,7 @@ const FoodLotteryApp = () => {
                         className="w-12 h-12 rounded-full mr-3 flex items-center justify-center"
                         style={{ backgroundColor: item.food.color }}
                       >
-                        {getIconComponent(item.food.icon, 20)}
+                        {item.food.icon && React.cloneElement(item.food.icon, { size: 20 })}
                       </div>
                       <div>
                         <h3 className="font-bold" style={{ color: colors.purple }}>
@@ -469,17 +487,9 @@ const FoodLotteryApp = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center">
-                      <div className="text-sm font-bold px-3 py-1 rounded-full mr-2" 
-                        style={{ backgroundColor: item.food.color, color: colors.purple }}>
-                        {item.food.calories} {uiText[language].kcal}
-                      </div>
-                      <button 
-                        onClick={() => deleteHistoryItem(item.id)}
-                        className="p-2 rounded-full bg-pink-50"
-                      >
-                        {React.createElement(Trash2, { size: 16, color: colors.purple })}
-                      </button>
+                    <div className="text-sm font-bold px-3 py-1 rounded-full" 
+                      style={{ backgroundColor: item.food.color, color: colors.purple }}>
+                      {item.food.calories} {uiText[language].kcal}
                     </div>
                   </div>
                   <p className="text-sm mt-2" style={{ color: colors.purple }}>
@@ -493,7 +503,8 @@ const FoodLotteryApp = () => {
       </div>
     );
   }
-// Settings view
+  
+  // Settings view
   if (view === 'settings') {
     return (
       <div className="min-h-screen" style={{ backgroundColor: colors.pink }}>
@@ -505,16 +516,16 @@ const FoodLotteryApp = () => {
             onClick={() => setView('home')}
             className="flex items-center"
           >
-            {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+            <ChevronLeft size={20} style={{ color: colors.purple }} />
             <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
           </button>
           <h2 className="text-xl font-bold" style={{ color: colors.purple }}>{uiText[language].foodManagement}</h2>
           <button
             onClick={toggleLanguage}
             className="flex items-center justify-center bg-white rounded-full shadow-sm"
-            style={{ width: '32px', height: '32px', position: 'relative' }}
+            style={{ width: '32px', height: '32px' }}
           >
-            {React.createElement(Globe, { size: 16, color: colors.purple })}
+            <Globe size={16} style={{ color: colors.purple }} />
             <span className="text-xs font-bold absolute" style={{ color: colors.purple, marginTop: '14px' }}>
               {getLanguageDisplay()}
             </span>
@@ -536,14 +547,11 @@ const FoodLotteryApp = () => {
                   <span className="text-sm font-bold" style={{ color: colors.purple }}>
                     {language === 'cn' ? '中文' : language === 'en' ? 'English' : '日本語'}
                   </span>
-                  {React.createElement(ChevronLeft, { 
-                    size: 14, 
-                    color: colors.purple,
-                    style: { 
-                      transform: showLanguageDropdown ? 'rotate(-90deg)' : 'rotate(90deg)',
-                      transition: 'transform 0.3s'
-                    }
-                  })}
+                  <ChevronLeft size={14} style={{ 
+                    color: colors.purple, 
+                    transform: showLanguageDropdown ? 'rotate(-90deg)' : 'rotate(90deg)',
+                    transition: 'transform 0.3s'
+                  }} />
                 </button>
                 
                 {showLanguageDropdown && (
@@ -603,7 +611,7 @@ const FoodLotteryApp = () => {
                 desc: { cn: '', en: '', jp: '' },
                 calories: '',
                 color: colors.lavender,
-                icon: 'Cake'
+                icon: <Cake />
               });
               setForm({ name: '', desc: '', calories: '', icon: 'cake' });
               setView('edit');
@@ -611,8 +619,8 @@ const FoodLotteryApp = () => {
             className="w-full py-3 rounded-2xl font-bold flex items-center justify-center mb-6"
             style={{ backgroundColor: colors.lavender, color: colors.purple }}
           >
-            {React.createElement(Plus, { size: 18 })}
-            <span className="ml-2">{uiText[language].addNewFood}</span>
+            <Plus size={18} className="mr-2" />
+            {uiText[language].addNewFood}
           </button>
           
           <div className="space-y-4">
@@ -626,7 +634,7 @@ const FoodLotteryApp = () => {
                     className="w-12 h-12 rounded-full mr-3 flex items-center justify-center"
                     style={{ backgroundColor: food.color }}
                   >
-                    {getIconComponent(food.icon)}
+                    {food.icon}
                   </div>
                   <div className="mr-2 flex-1">
                     <h3 className="font-bold" style={{ color: colors.purple }}>
@@ -650,10 +658,10 @@ const FoodLotteryApp = () => {
                       
                       // Determine current icon type
                       let iconType = 'cake';
-                      if (food.icon === 'Soup') iconType = 'soup';
-                      else if (food.icon === 'Drumstick') iconType = 'drumstick';
-                      else if (food.icon === 'Fish') iconType = 'fish';
-                      else if (food.icon === 'Cake') iconType = 'cake';
+                      if (food.icon.type === Soup) iconType = 'soup';
+                      else if (food.icon.type === Drumstick) iconType = 'drumstick';
+                      else if (food.icon.type === Fish) iconType = 'fish';
+                      else if (food.icon.type === Cake) iconType = 'cake';
                       
                       setForm({
                         name: food.name[language],
@@ -665,7 +673,7 @@ const FoodLotteryApp = () => {
                     }}
                     className="p-2 rounded-full mr-1"
                   >
-                    {React.createElement(PenLine, { size: 16, color: colors.purple })}
+                    <PenLine size={16} style={{ color: colors.purple }} />
                   </button>
                   <button
                     onClick={() => {
@@ -678,7 +686,7 @@ const FoodLotteryApp = () => {
                     }}
                     className="p-2 rounded-full"
                   >
-                    {React.createElement(Trash2, { size: 16, color: colors.purple })}
+                    <Trash2 size={16} style={{ color: colors.purple }} />
                   </button>
                 </div>
               </div>
@@ -688,7 +696,8 @@ const FoodLotteryApp = () => {
       </div>
     );
   }
-// Edit view
+  
+  // Edit view
   if (view === 'edit') {
     return (
       <div className="min-h-screen" style={{ backgroundColor: colors.pink }}>
@@ -700,7 +709,7 @@ const FoodLotteryApp = () => {
             onClick={() => setView('settings')}
             className="flex items-center"
           >
-            {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+            <ChevronLeft size={20} style={{ color: colors.purple }} />
             <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
           </button>
           <h2 className="text-xl font-bold" style={{ color: colors.purple }}>
@@ -709,9 +718,9 @@ const FoodLotteryApp = () => {
           <button
             onClick={toggleLanguage}
             className="flex items-center justify-center bg-white rounded-full shadow-sm"
-            style={{ width: '32px', height: '32px', position: 'relative' }}
+            style={{ width: '32px', height: '32px' }}
           >
-            {React.createElement(Globe, { size: 16, color: colors.purple })}
+            <Globe size={16} style={{ color: colors.purple }} />
             <span className="text-xs font-bold absolute" style={{ color: colors.purple, marginTop: '14px' }}>
               {getLanguageDisplay()}
             </span>
@@ -726,10 +735,10 @@ const FoodLotteryApp = () => {
             >
               {(() => {
                 switch(form.icon) {
-                  case 'soup': return React.createElement(Soup, { size: 32, color: colors.purple });
-                  case 'drumstick': return React.createElement(Drumstick, { size: 32, color: colors.purple });
-                  case 'fish': return React.createElement(Fish, { size: 32, color: colors.purple });
-                  case 'cake': default: return React.createElement(Cake, { size: 32, color: colors.purple });
+                  case 'soup': return <Soup size={32} style={{ color: colors.purple }} />;
+                  case 'drumstick': return <Drumstick size={32} style={{ color: colors.purple }} />;
+                  case 'fish': return <Fish size={32} style={{ color: colors.purple }} />;
+                  case 'cake': default: return <Cake size={32} style={{ color: colors.purple }} />;
                 }
               })()}
             </div>
@@ -745,10 +754,10 @@ const FoodLotteryApp = () => {
               style={{ borderColor: colors.lavender }}
             >
               <div className="flex items-center">
-                {form.icon === 'soup' && React.createElement(Soup, { size: 20, color: colors.purple })}
-                {form.icon === 'drumstick' && React.createElement(Drumstick, { size: 20, color: colors.purple })}
-                {form.icon === 'fish' && React.createElement(Fish, { size: 20, color: colors.purple })}
-                {form.icon === 'cake' && React.createElement(Cake, { size: 20, color: colors.purple })}
+                {form.icon === 'soup' && <Soup size={20} style={{ color: colors.purple }} />}
+                {form.icon === 'drumstick' && <Drumstick size={20} style={{ color: colors.purple }} />}
+                {form.icon === 'fish' && <Fish size={20} style={{ color: colors.purple }} />}
+                {form.icon === 'cake' && <Cake size={20} style={{ color: colors.purple }} />}
                 <span className="ml-2 text-sm" style={{ color: colors.purple }}>
                   {form.icon === 'soup' && uiText[language].soup}
                   {form.icon === 'drumstick' && uiText[language].meat}
@@ -756,14 +765,11 @@ const FoodLotteryApp = () => {
                   {form.icon === 'cake' && uiText[language].dessert}
                 </span>
               </div>
-              {React.createElement(ChevronLeft, { 
-                size: 16, 
-                color: colors.purple,
-                style: { 
-                  transform: showIconDropdown ? 'rotate(-90deg)' : 'rotate(90deg)',
-                  transition: 'transform 0.3s'
-                }
-              })}
+              <ChevronLeft size={16} style={{ 
+                color: colors.purple, 
+                transform: showIconDropdown ? 'rotate(-90deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s'
+              }} />
             </button>
             
             {showIconDropdown && (
@@ -777,7 +783,7 @@ const FoodLotteryApp = () => {
                     className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
                   >
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.teal }}>
-                      {React.createElement(Soup, { size: 16, color: colors.purple })}
+                      <Soup size={16} style={{ color: colors.purple }} />
                     </div>
                     <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].soup}</span>
                   </button>
@@ -790,7 +796,7 @@ const FoodLotteryApp = () => {
                     className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
                   >
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.green }}>
-                      {React.createElement(Drumstick, { size: 16, color: colors.purple })}
+                      <Drumstick size={16} style={{ color: colors.purple }} />
                     </div>
                     <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].meat}</span>
                   </button>
@@ -803,7 +809,7 @@ const FoodLotteryApp = () => {
                     className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
                   >
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.teal }}>
-                      {React.createElement(Fish, { size: 16, color: colors.purple })}
+                      <Fish size={16} style={{ color: colors.purple }} />
                     </div>
                     <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].fish}</span>
                   </button>
@@ -816,7 +822,7 @@ const FoodLotteryApp = () => {
                     className="w-full p-2 rounded-lg flex items-center hover:bg-gray-100"
                   >
                     <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.lavender }}>
-                      {React.createElement(Cake, { size: 16, color: colors.purple })}
+                      <Cake size={16} style={{ color: colors.purple }} />
                     </div>
                     <span className="ml-2 text-sm" style={{ color: colors.purple }}>{uiText[language].dessert}</span>
                   </button>
@@ -892,10 +898,19 @@ const FoodLotteryApp = () => {
                 // Get selected icon
                 let foodIcon;
                 switch(form.icon) {
-                  case 'soup': foodIcon = 'Soup'; break;
-                  case 'drumstick': foodIcon = 'Drumstick'; break;
-                  case 'fish': foodIcon = 'Fish'; break;
-                  case 'cake': default: foodIcon = 'Cake'; break;
+                  case 'soup':
+                    foodIcon = <Soup />;
+                    break;
+                  case 'drumstick':
+                    foodIcon = <Drumstick />;
+                    break;
+                  case 'fish':
+                    foodIcon = <Fish />;
+                    break;
+                  case 'cake':
+                  default:
+                    foodIcon = <Cake />;
+                    break;
                 }
                 
                 if (editing && editing.id) {
@@ -950,7 +965,6 @@ const FoodLotteryApp = () => {
     );
   }
   
-  // Default fallback view
   return (
     <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: colors.pink }}>
       <p style={{ color: colors.purple }}>Loading...</p>
@@ -958,5 +972,4 @@ const FoodLotteryApp = () => {
   );
 };
 
-// Render the app
-ReactDOM.render(<FoodLotteryApp />, document.getElementById('root'));
+export default FoodLotteryApp;
