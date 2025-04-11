@@ -316,3 +316,105 @@ const FoodLotteryApp = () => {
     }, 150);
   };
   
+// Spinning view
+  if (view === 'spinning') {
+    return (
+      <div className="min-h-screen p-6 flex flex-col items-center justify-center" style={{ backgroundColor: colors.pink }}>
+        <h2 className="text-3xl font-bold mb-10 text-center" style={{ color: colors.purple }}>
+          {uiText[language].drawing}
+        </h2>
+        
+        <div className="w-64 h-64 mb-8">
+          {selectedFood && (
+            <div 
+              className="w-full h-full rounded-3xl flex flex-col items-center justify-center p-6"
+              style={{ backgroundColor: selectedFood.color }}
+            >
+              <div className="mb-4 p-4 bg-white rounded-full">
+                {getIconComponent(selectedFood.icon)}
+              </div>
+              <span className="text-2xl font-bold text-center" style={{ color: colors.purple }}>
+                {selectedFood.name[language]}
+              </span>
+            </div>
+          )}
+        </div>
+        
+        <p className="animate-pulse text-center" style={{ color: colors.purple }}>
+          {uiText[language].findingFood}
+        </p>
+      </div>
+    );
+  }
+  
+  // Result view
+  if (view === 'result' && selectedFood) {
+    return (
+      <div className="min-h-screen p-6 flex flex-col items-center justify-center" style={{ backgroundColor: colors.pink }}>
+        <div className="max-w-md w-full bg-white rounded-2xl overflow-hidden">
+          <div 
+            className="p-4 flex items-center justify-between"
+            style={{ backgroundColor: selectedFood.color }}
+          >
+            <button 
+              onClick={() => setView('home')}
+              className="flex items-center"
+            >
+              {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+              <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
+            </button>
+            <h2 className="text-xl font-bold" style={{ color: colors.purple }}>{uiText[language].todayFood}</h2>
+            <div className="w-10"></div>
+          </div>
+          
+          <div className="p-6">
+            <div className="flex flex-col items-center mb-6">
+              <div 
+                className="w-28 h-28 rounded-full mb-4 flex items-center justify-center"
+                style={{ backgroundColor: selectedFood.color }}
+              >
+                {getIconComponent(selectedFood.icon, 48)}
+              </div>
+              
+              <div className="px-4 py-1 rounded-full text-sm font-bold mb-4" style={{ 
+                backgroundColor: selectedFood.color,
+                color: colors.purple
+              }}>
+                {selectedFood.calories} {uiText[language].kcal}
+              </div>
+              
+              <h1 className="text-3xl font-bold mb-4 text-center" style={{ color: colors.purple }}>
+                {selectedFood.name[language]}
+              </h1>
+              
+              <p className="text-center mb-4" style={{ color: colors.purple }}>
+                {selectedFood.desc[language]}
+              </p>
+              
+              <p className="text-center text-sm italic" style={{ color: colors.purple }}>
+                {messages[language][Math.floor(Math.random() * messages[language].length)]}
+              </p>
+            </div>
+            
+            <div className="flex justify-between gap-4">
+              <button
+                onClick={() => setView('home')}
+                className="flex-1 py-3 rounded-full font-bold"
+                style={{ backgroundColor: colors.green, color: colors.purple }}
+              >
+                {uiText[language].drawAgain}
+              </button>
+              <button
+                onClick={() => alert(`${uiText[language].shareAlert} ${selectedFood.name[language]}!`)}
+                className="flex-1 py-3 rounded-full font-bold flex items-center justify-center"
+                style={{ backgroundColor: selectedFood.color, color: colors.purple }}
+              >
+                {React.createElement(Share2, { size: 18 })}
+                <span className="ml-2">{uiText[language].shareResult}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
