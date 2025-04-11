@@ -493,3 +493,198 @@ const FoodLotteryApp = () => {
       </div>
     );
   }
+// Settings view
+  if (view === 'settings') {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: colors.pink }}>
+        <div 
+          className="p-4 flex items-center justify-between"
+          style={{ borderBottom: `1px solid ${colors.lavender}` }}
+        >
+          <button 
+            onClick={() => setView('home')}
+            className="flex items-center"
+          >
+            {React.createElement(ChevronLeft, { size: 20, color: colors.purple })}
+            <span className="font-bold" style={{ color: colors.purple }}>{uiText[language].back}</span>
+          </button>
+          <h2 className="text-xl font-bold" style={{ color: colors.purple }}>{uiText[language].foodManagement}</h2>
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center justify-center bg-white rounded-full shadow-sm"
+            style={{ width: '32px', height: '32px', position: 'relative' }}
+          >
+            {React.createElement(Globe, { size: 16, color: colors.purple })}
+            <span className="text-xs font-bold absolute" style={{ color: colors.purple, marginTop: '14px' }}>
+              {getLanguageDisplay()}
+            </span>
+          </button>
+        </div>
+        
+        <div className="p-4">
+          {/* Language Selection */}
+          <div className="bg-white rounded-2xl p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold" style={{ color: colors.purple }}>{uiText[language].language}</h3>
+              
+              <div className="relative" style={{ width: '120px' }}>
+                <button
+                  onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                  className="p-2 bg-white rounded-lg border flex items-center justify-between"
+                  style={{ borderColor: colors.lavender, width: '100%' }}
+                >
+                  <span className="text-sm font-bold" style={{ color: colors.purple }}>
+                    {language === 'cn' ? '中文' : language === 'en' ? 'English' : '日本語'}
+                  </span>
+                  {React.createElement(ChevronLeft, { 
+                    size: 14, 
+                    color: colors.purple,
+                    style: { 
+                      transform: showLanguageDropdown ? 'rotate(-90deg)' : 'rotate(90deg)',
+                      transition: 'transform 0.3s'
+                    }
+                  })}
+                </button>
+                
+                {showLanguageDropdown && (
+                  <div className="absolute right-0 mt-1 p-2 bg-white rounded-lg shadow-lg border z-10" 
+                       style={{ borderColor: colors.lavender, width: '100%' }}>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => {
+                          setLanguage('cn');
+                          setShowLanguageDropdown(false);
+                        }}
+                        className="w-full p-2 rounded-lg flex items-center justify-between hover:bg-gray-100"
+                      >
+                        <span className="text-sm" style={{ color: colors.purple }}>中文</span>
+                        {language === 'cn' && (
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: colors.lavender }}></div>
+                        )}
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setLanguage('en');
+                          setShowLanguageDropdown(false);
+                        }}
+                        className="w-full p-2 rounded-lg flex items-center justify-between hover:bg-gray-100"
+                      >
+                        <span className="text-sm" style={{ color: colors.purple }}>English</span>
+                        {language === 'en' && (
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: colors.lavender }}></div>
+                        )}
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setLanguage('jp');
+                          setShowLanguageDropdown(false);
+                        }}
+                        className="w-full p-2 rounded-lg flex items-center justify-between hover:bg-gray-100"
+                      >
+                        <span className="text-sm" style={{ color: colors.purple }}>日本語</span>
+                        {language === 'jp' && (
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: colors.lavender }}></div>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <button
+            onClick={() => {
+              setEditing({
+                id: null,
+                name: { cn: '', en: '', jp: '' },
+                desc: { cn: '', en: '', jp: '' },
+                calories: '',
+                color: colors.lavender,
+                icon: 'Cake'
+              });
+              setForm({ name: '', desc: '', calories: '', icon: 'cake' });
+              setView('edit');
+            }}
+            className="w-full py-3 rounded-2xl font-bold flex items-center justify-center mb-6"
+            style={{ backgroundColor: colors.lavender, color: colors.purple }}
+          >
+            {React.createElement(Plus, { size: 18 })}
+            <span className="ml-2">{uiText[language].addNewFood}</span>
+          </button>
+          
+          <div className="space-y-4">
+            {foods.map(food => (
+              <div 
+                key={food.id} 
+                className="bg-white rounded-2xl p-4 flex items-center justify-between"
+              >
+                <div className="flex items-center flex-1">
+                  <div 
+                    className="w-12 h-12 rounded-full mr-3 flex items-center justify-center"
+                    style={{ backgroundColor: food.color }}
+                  >
+                    {getIconComponent(food.icon)}
+                  </div>
+                  <div className="mr-2 flex-1">
+                    <h3 className="font-bold" style={{ color: colors.purple }}>
+                      {food.name[language]}
+                    </h3>
+                    <p className="text-xs" style={{ color: colors.purple }}>
+                      {food.desc[language]}
+                    </p>
+                  </div>
+                  <div className="text-sm font-bold px-3 py-1 rounded-full" 
+                    style={{ backgroundColor: food.color, color: colors.purple }}>
+                    {food.calories} {uiText[language].kcal}
+                  </div>
+                </div>
+                
+                <div className="flex ml-4">
+                  <button
+                    onClick={() => {
+                      // Edit food
+                      setEditing(food);
+                      
+                      // Determine current icon type
+                      let iconType = 'cake';
+                      if (food.icon === 'Soup') iconType = 'soup';
+                      else if (food.icon === 'Drumstick') iconType = 'drumstick';
+                      else if (food.icon === 'Fish') iconType = 'fish';
+                      else if (food.icon === 'Cake') iconType = 'cake';
+                      
+                      setForm({
+                        name: food.name[language],
+                        desc: food.desc[language],
+                        calories: food.calories.toString(),
+                        icon: iconType
+                      });
+                      setView('edit');
+                    }}
+                    className="p-2 rounded-full mr-1"
+                  >
+                    {React.createElement(PenLine, { size: 16, color: colors.purple })}
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Delete food
+                      if (foods.length <= 1) {
+                        alert(uiText[language].alertKeepOne);
+                        return;
+                      }
+                      setFoods(foods.filter(f => f.id !== food.id));
+                    }}
+                    className="p-2 rounded-full"
+                  >
+                    {React.createElement(Trash2, { size: 16, color: colors.purple })}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
