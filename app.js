@@ -245,3 +245,74 @@ const FoodLotteryApp = () => {
       deleteHistory: "記録を削除"
     }
   };
+// Toggle language
+  const toggleLanguage = () => {
+    if (language === 'cn') {
+      setLanguage('en');
+    } else if (language === 'en') {
+      setLanguage('jp');
+    } else {
+      setLanguage('cn');
+    }
+  };
+  
+  // Language display
+  const getLanguageDisplay = () => {
+    return language === 'cn' ? '中' : language === 'en' ? 'EN' : '日';
+  };
+  
+  // Delete single history entry
+  const deleteHistoryItem = (id) => {
+    setHistory(history.filter(item => item.id !== id));
+  };
+  
+  // 获取图标组件
+  const getIconComponent = (iconName, size = 24) => {
+    const props = { size };
+    switch(iconName) {
+      case 'Soup': return React.createElement(Soup, props);
+      case 'Drumstick': return React.createElement(Drumstick, props);
+      case 'Fish': return React.createElement(Fish, props);
+      case 'Cake': return React.createElement(Cake, props);
+      case 'Utensils': return React.createElement(Utensils, props);
+      default: return React.createElement(Cake, props);
+    }
+  };
+
+  // Start lottery
+  const startLottery = () => {
+    if (foods.length === 0) return;
+    
+    setSpinning(true);
+    setView('spinning');
+    
+    let count = 0;
+    const interval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * foods.length);
+      setSelectedFood(foods[randomIndex]);
+      count++;
+      
+      if (count >= 10) {
+        clearInterval(interval);
+        const winner = foods[Math.floor(Math.random() * foods.length)];
+        setSelectedFood(winner);
+        
+        // Save history
+        const now = new Date();
+        const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        const messageArray = messages[language];
+        const message = messageArray[Math.floor(Math.random() * messageArray.length)];
+        
+        setHistory([
+          { id: Date.now(), food: winner, date, message, language },
+          ...history
+        ]);
+        
+        setTimeout(() => {
+          setSpinning(false);
+          setView('result');
+        }, 300);
+      }
+    }, 150);
+  };
+  
